@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <h1>After School Program</h1>
     <!-- Search and Sort inputs -->
     <div class="search-sort">
       <input

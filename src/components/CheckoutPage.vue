@@ -1,7 +1,7 @@
 <template>
   <div class="container mt-4">
     <h1>Checkout Page</h1>
-    <div v-for="item in cartItems" :key="item.id" class="card mb-3">
+    <div v-for="item in cartItems" :key="item._id" class="card mb-3">
       <div class="card-body">
         <p><strong>{{ item.title }}</strong> (Quantity: {{ item.quantity }})</p>
         <p>Location: {{ item.location }}</p>
@@ -26,11 +26,16 @@
 <script>
 export default {
   name: "CheckoutPage",
+  props: {
+    cart: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       name: "",
       phone: "",
-      cart: JSON.parse(localStorage.getItem('cart')) || {},
       checkoutMessage: "",
     };
   },
@@ -44,12 +49,7 @@ export default {
   },
   methods: {
     removeFromCart(item) {
-      if (this.cart[item.id].quantity > 1) {
-        this.cart[item.id].quantity--;
-      } else {
-        delete this.cart[item.id];
-      }
-      localStorage.setItem('cart', JSON.stringify(this.cart));
+      this.$emit('remove-from-cart', item);
     },
     async checkout() {
       if (!this.validForm) {
@@ -70,8 +70,7 @@ export default {
           throw new Error(`Error creating order: ${response.statusText}`);
         }
         this.checkoutMessage = `Order created successfully for ${this.name} (phone: ${this.phone})!`;
-        this.cart = {};
-        localStorage.setItem('cart', JSON.stringify(this.cart));
+        this.$emit('clear-cart');
         setTimeout(() => {
           this.$router.push('/');
         }, 2000); // Redirect back to home after 2 seconds
@@ -85,7 +84,6 @@ export default {
 </script>
 
 <style scoped>
-/* Add styles as needed */
 .container {
   max-width: 600px;
 }
