@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "deploy": "gh-pages -d dist"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.2",
-    "bootstrap": "^4.6.2",
-    "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
     "font-awesome": "^4.7.0",
     "vue": "^3.2.13",
@@ -21,8 +20,7 @@
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.7.1",
-    "gh-pages": "^6.1.1"
+    "eslint-plugin-vue": "^8.7.1"
   },
   "eslintConfig": {
     "root": true,
