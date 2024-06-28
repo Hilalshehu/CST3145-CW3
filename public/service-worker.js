@@ -1,4 +1,4 @@
-var CacheName = 'Wsbstore';
+var CacheName = 'Webstore';
 var CacheFiles = [
     'index.html',
     'style.css',
