@@ -1,10 +1,11 @@
-var CacheName = 'petstore-v1';
+var CacheName = 'Wsbstore';
 var CacheFiles = [
     'index.html',
-    'ProductList.vue',
+    'style.css',
     'webstore.webmanifest',
-    'images/img12.jpg',
-    'images/img13.png'
+    'bootstrap.css',
+     'bootstrap.min.css'
+    
 ];
 
 self.addEventListener('install', (e) => {
