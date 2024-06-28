@@ -10,7 +10,7 @@ const routes = [
     component: ProductList
   },
   {
-    path: '/Checkout',
+    path: '/CheckoutPage.vue',
     name: 'CheckoutPage',
     component: CheckoutPage 
   }
@@ -18,7 +18,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 export default router;

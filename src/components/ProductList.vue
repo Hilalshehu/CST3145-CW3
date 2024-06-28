@@ -1,93 +1,87 @@
 <template>
-  <div>
-    <!-- Proceed to Checkout button -->
-    <button v-if="cartItemCount > 0" @click="showCheckoutForm" class="btn btn-primary">
-      Proceed to Checkout ({{ cartItemCount }})
-    </button>
-
-    <div v-for="lesson in filteredLessons" :key="lesson.id">
-      <h2>{{ lesson.title }}</h2>
-      <h5>{{ lesson.subject }}</h5>
-      <p>Location: {{ lesson.location }}</p>
-      <p>Price: AED{{ lesson.price }}</p>
-      <p>Spaces: {{ lesson.spaces }}</p>
-      <button :disabled="lesson.spaces === 0" @click="addToCart(lesson)" class="btn btn-primary">
-        Add to Cart
-      </button>
+  <div class="container">
+    <!-- Search and Sort inputs -->
+    <div class="search-sort">
+      <input
+        v-model="searchQuery"
+        @input="filterLessons"
+        class="form-control"
+        placeholder="Search by subject or location"
+      />
+      <select v-model="sortOrder" @change="sortLessons" class="form-control ml-2">
+        <option value="priceAsc">Sort by Price: Low to High</option>
+        <option value="priceDesc">Sort by Price: High to Low</option>
+        <option value="locationAsc">Sort by Location: A to Z</option>
+        <option value="locationDesc">Sort by Location: Z to A</option>
+      </select>
     </div>
 
-    <!-- Cart display (if needed) -->
-    <div v-if="showCart">
-      <div v-for="item in cartItems" :key="item.id">
-        <p>{{ item.title }} ({{ item.quantity }})</p>
-        <button class="btn btn-primary" @click="removeFromCart(item)">Remove</button>
+    <!-- Lessons List -->
+    <div class="row">
+    <div v-for="lesson in sortedLessons" :key="lesson.id" class="col-md-4 mt-1 mb-1 shadow">
+      <div class="card">
+      <div class="card-body">
+        <i :class="lesson.icon"></i>
+        <h2>{{ lesson.title }}</h2>
+        <h5>{{ lesson.subject }}</h5>
+        <p>Location: {{ lesson.location }}</p>
+        <p>Price: AED{{ lesson.price }}</p>
+        <p>Spaces: {{ lesson.spaces }}</p>
+        <button
+          :disabled="lesson.spaces === 0"
+          @click="addToCart(lesson)"
+          class="btn btn-primary"
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
-
-    <!-- User information form -->
-    <div v-if="showForm">
-      <h3>Enter Your Information</h3>
-      <form @submit.prevent="proceedToCheckout">
-        <div class="form-group">
-          <label for="name">Name:</label>
-          <input id="name" v-model="name" type="text" class="form-control" required>
-        </div>
-        <div class="form-group">
-          <label for="phone">Phone:</label>
-          <input id="phone" v-model="phone" type="text" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary" :disabled="!validForm">Checkout</button>
-        <p v-if="!validForm" style="color: red;">Fields Required.</p>
-      </form>
+  </div>
     </div>
+
+    <!-- Proceed to Checkout button -->
+    
   </div>
 </template>
 
 <script>
+
+
 export default {
   name: "ProductList",
   data() {
     return {
-      lessons: [],
-      cart: JSON.parse(localStorage.getItem('cart')) || {},
-      showCart: true,
-      showForm: false,
-      sortOption: "",
+      
+      filteredLessons: [],
+      cart: JSON.parse(localStorage.getItem("cart")) || {},
       searchQuery: "",
-      sortOrder: "asc",
-      name: "",
-      phone: ""
+      sortOrder: "priceAsc",
     };
   },
+  
   created() {
     this.getLessons();
   },
   methods: {
     async getLessons() {
-      const url = new URL('https://backend-ten-inky-80.vercel.app/collection/products');
-      url.searchParams.append('search', this.searchQuery);
-      url.searchParams.append('searchField', 'subject');
-      url.searchParams.append('sort', this.sortOrder);
+      const url = new URL(this.$root.serverUrl + "/collection/products");
 
       const response = await fetch(url);
-      const lessons = await response.json();
-      this.lessons = lessons;
-    },
-    addToCart(lesson) {
-      if (lesson.spaces > 0) {
-        if (!this.cart[lesson.id]) {
-          this.cart[lesson.id] = { ...lesson, quantity: 0 };
-        }
-        this.cart[lesson.id].quantity++;
-        lesson.spaces--;
-        localStorage.setItem('cart', JSON.stringify(this.cart));
+      if (response.ok) {
+        const lessons = await response.json();
+        this.lessons = lessons;
+        this.filteredLessons = lessons;
+        this.sortLessons();
+      } else {
+        console.error("Failed to fetch lessons:", response.statusText);
       }
     },
+    addToCart(lesson) {
+      this.$emit('addProducts', lesson);
+    },
+    
     toggleCart() {
       this.showCart = !this.showCart;
-    },
-    showCheckoutForm() {
-      this.showForm = true;
     },
     removeFromCart(item) {
       if (this.cart[item.id].quantity > 1) {
@@ -95,42 +89,181 @@ export default {
       } else {
         delete this.cart[item.id];
       }
-      localStorage.setItem('cart', JSON.stringify(this.cart));
+      localStorage.setItem("cart", JSON.stringify(this.cart));
     },
-    proceedToCheckout() {
-      if (this.validForm) {
-        // Make sure this route is defined in your router configuration
-        this.$router.push({ name: 'CheckoutPage' });
-      }
-    }
+    filterLessons() {
+      this.filteredLessons = this.lessons.filter(
+        (lesson) =>
+          lesson.subject.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+          lesson.location.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+      this.sortLessons();
+    },
+    sortLessons() {
+      const compareFunctions = {
+        priceAsc: (a, b) => a.price - b.price,
+        priceDesc: (a, b) => b.price - a.price,
+        locationAsc: (a, b) => a.location.localeCompare(b.location),
+        locationDesc: (a, b) => b.location.localeCompare(a.location),
+      };
+      this.filteredLessons.sort(compareFunctions[this.sortOrder]);
+    },
   },
   computed: {
-    cartItems() {
-      return Object.values(this.cart);
-    },
-    filteredLessons() {
-      return this.lessons.filter(lesson =>
-        lesson.subject.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        lesson.location.toLowerCase().includes(this.searchQuery.toLowerCase())
-      );
-    },
     cartItemCount() {
       return Object.values(this.cart).reduce((total, item) => total + item.quantity, 0);
     },
-    validForm() {
-      return this.name.trim() !== "" && this.phone.trim() !== "";
-    }
+    sortedLessons() {
+      return this.filteredLessons;
+    },
   },
   watch: {
-    searchQuery: 'getLessons',
-    sortOption: 'getLessons',
-    sortOrder: 'getLessons'
-  }
+    searchQuery: "filterLessons",
+    sortOrder: "sortLessons",
+  },
 };
 </script>
 
 <style scoped>
-/* Ensure scoped attribute is used if you want styles scoped to this component only */
-@import 'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css';
-@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css';
+.search-sort {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.card {
+  margin-bottom: 1rem;
+}
+.btn-primary {
+  margin-top: 1rem;
+}
+</style>
+
+<style scoped>
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #FFFFFF;
+  color: #68B9C5;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  color: #68B9C5;
+  margin: auto;
+}
+
+button {
+  background-color: #FFFFFF;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  margin-bottom: auto;
+}
+  
+/* Lesson List */
+.lesson {
+  display: flex;
+  flex-direction: column; /* Adjust the layout to column */
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 10px; /* Rounded corners */
+  background-color: #000000; /* Black background color */
+  color: #FFFFFF; /* White text color */
+  margin-bottom: 1rem; /* Add space between cards */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+/* Shopping Cart */
+.cart {
+  margin-top: auto;
+}
+
+.cart ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cart li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: auto;
+}
+
+/* Checkout */
+.CheckoutPage {
+  margin-top: auto;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f2f2f2;
+  color: #333;
+  padding-top: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+h1 {
+  color: #007bff;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.search-sort {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.search-sort .form-control {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.search-sort .form-control:last-child {
+  margin-right: 0;
+}
 </style>

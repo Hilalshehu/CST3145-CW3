@@ -26,9 +26,9 @@
     justify-content: space-between;
 }
 
-.bg.img {
-    background-image: url(/Images/images.png);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-}
+/* .bg.img { */
+    /* background-image: url(/Images/images.png); */
+    /* background-position: center; */
+    /* background-size: cover; */
+    /* background-repeat: no-repeat; */
+/* } */
