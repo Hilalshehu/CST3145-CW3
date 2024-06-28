@@ -9,7 +9,7 @@ var CacheFiles = [
 ];
 
 self.addEventListener('install', (e) => {
-    console.log('[Service Worker] Install');
+    console.log('[Service-Worker]');
     e.waituntil(
         caches.open(CacheName).then((cache) => {
             console.log('[Service Worker] Caching all the Files');
