@@ -8,7 +8,7 @@
       
       <ProductList @addProducts="addToCart" :serverUrl="serverUrl" v-if="activeComponent === 'ProductList'" />
       <CheckoutPage :cart="cart" v-if="activeComponent === 'CheckoutPage'" />
-      <button v-on:click="changeComponent" class="btn btn-primary m-3">    Proceed to Checkout ({{ cartItemCount }})</button>
+      <button v-on:click="changeComponent" class="btn btn-primary m-3">    Proceed to Checkout{{ cartItemCount }}</button>
     </main>
     
   </div>
@@ -31,6 +31,11 @@ export default {
       lessons: [],
       activeComponent: 'ProductList'
     };
+  },
+  computed: {
+    cartItemCount() {
+      return Object.values(this.cart).reduce((total, item) => total + item.quantity, 0);
+    }
   },
   methods: {
     changeComponent() {
