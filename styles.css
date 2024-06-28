@@ -1,0 +1,76 @@
+
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #FFFFFF;
+  color: #68B9C5;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  color: #68B9C5;
+  margin: auto;
+}
+
+button {
+  background-color: #FFFFFF;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+input {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  margin-bottom: auto;
+}
+  
+/* Lesson List */
+.lesson {
+  display: flex;
+  flex-direction: column; /* Adjust the layout to column */
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 10px; /* Rounded corners */
+  background-color: #000000; /* Black background color */
+  color: #FFFFFF; /* White text color */
+  margin-bottom: 1rem; /* Add space between cards */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+/* Shopping Cart */
+.cart {
+  margin-top: auto;
+}
+
+.cart ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.cart li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: auto;
+}
+
+/* Checkout */
+.checkout {
+  margin-top: auto;
+}
