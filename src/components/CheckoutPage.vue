@@ -3,7 +3,8 @@
     <h1>Checkout Page</h1>
     <div v-for="item in cartItems" :key="item._id" class="card mb-3">
       <div class="card-body">
-        <p><strong>{{ item.title }}</strong> (Quantity: {{ item.quantity }})</p>
+        <i :class="lesson.icon"></i>
+        <p><strong>{{ item.title }}</strong> (Quantity: {{ item.spaces }})</p>
         <p>Location: {{ item.location }}</p>
         <p>Price: ${{ item.price }}</p>
         <button @click="removeFromCart(item)" class="btn btn-danger">Remove</button>
