@@ -3,14 +3,14 @@
     "description": "My After School Program Website",
     "icons": [
         {
-            "src": "img12.jpeg",
+            "src": "192x192.png",
             "sizes": "192x192",
-            "type": "img12.jpeg"
+            "type": "192x192.png"
         },
         {
-            "src": "img13.jpeg",
+            "src": "512.png",
             "sizes": "512x512",
-            "type": "img13.jpeg"
+            "type": "512.png"
         }
         
     ],

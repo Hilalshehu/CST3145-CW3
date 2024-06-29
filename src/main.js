@@ -1,13 +1,15 @@
 // src/main.js
 import { createApp } from 'vue';
 import App from './App.vue';
-// Import Bootstrap CSS
-import '../public/bootstrap.css'
+import router from './router'; // Import your router configuration
+
+// Import global CSS files
+import '../public/bootstrap.css';
 import '../public/bootstrap.min.css';
+import '../public/style.css';
 
-
-
-import '../public/bootstrap.css'
-import '../public/style.css'
 const app = createApp(App);
-  app.mount('#app');
+
+app.use(router); // Register the router with Vue instance
+
+app.mount('#app');

@@ -8,7 +8,7 @@ var CacheFiles = [
 ];
 
 self.addEventListener('install', (e) => {
-    console.log('[Service-Worker]');
+    console.log('[Service Worker] Installing...');
     e.waitUntil(
         caches.open(CacheName).then((cache) => {
             console.log('[Service Worker] Caching all the Files');
@@ -17,35 +17,38 @@ self.addEventListener('install', (e) => {
     );
 });
 
+
 self.addEventListener('fetch', function (e) {
     e.respondWith(
         caches.match(e.request).then(function (r) {
-            // Return the cached response if available
             if (r) {
-                return r;
-            }
-
-            // Fetch the resource from the network
-            return fetch(e.request).then(function (response) {
-                // Check if we received a valid response
-                if (!response || response.status !== 200 || response.type !== 'basic') {
-                    return response;
-                }
-
-                // Clone the response because it can only be consumed once
-                var responseToCache = response.clone();
-
-                // Open a cache and put the fetched response in it
-                return caches.open(CacheName).then(function (cache) {
-                    cache.put(e.request, responseToCache);
-                    return response;
+                return r; // Return the cached response if available
+            } else {
+                // Fetch the request from the network
+                return fetch(e.request).then(function (response) {
+                    if (!response || response.status !== 200 || response.type !== 'basic') {
+                        return response; // Do not cache responses that are not successful or not basic
+                    }
+                    var responseToCache = response.clone();
+                    caches.open(CacheName).then(function (cache) {
+                        cache.put(e.request, responseToCache).then(function () {
+                            console.log('[Service Worker] Cached response:', e.request.url);
+                        }).catch(function (error) {
+                            console.error('[Service Worker] Cache put error:', error);
+                        });
+                    });
+                    return response; // Return the fetched response to the fetch event
+                }).catch(function (error) {
+                    console.error('[Service Worker] Fetch failed:', error);
+                    throw error;
                 });
-            }).catch(function (error) {
-                // Network request failed, return a fallback response
-                console.error('Fetch failed; returning offline page instead.', error);
-                return caches.match('offline.html');
-            });
+            }
+        }).catch(function (error) {
+            console.error('[Service Worker] Cache match failed:', error);
+            throw error;
         })
     );
 });
+
+
 

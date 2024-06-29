@@ -39,9 +39,6 @@
     </div>
   </div>
     </div>
-
-    <!-- Proceed to Checkout button -->
-    
   </div>
 </template>
 
