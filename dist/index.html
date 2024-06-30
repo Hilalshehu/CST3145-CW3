@@ -1,3 +1,30 @@
-<!doctype html><html lang=""><head><title>After School Program</title><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/><title>hello-world</title><script>if('service-worker' in navigator){
-    navigator.serviceWorker.register('service-worker.js')
-   };</script><script defer="defer" src="/js/chunk-vendors.66e51175.js"></script><script defer="defer" src="/js/app.0d0f9463.js"></script><link href="/css/chunk-vendors.d4db8405.css" rel="stylesheet"><link href="/css/app.788305e6.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but hello-world doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
+<!doctype html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue App</title>
+    <script defer="defer" src="/js/chunk-vendors.4dd9897c.js"></script>
+    <script defer="defer" src="/js/app.90bf5243.js"></script>
+    <link href="/css/app.b8f894ed.css" rel="stylesheet">
+    <script>
+        if ('serviceWorker' in navigator){
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('SW registered: ', registration);
+                }).catch(registrationError => {
+                    console.log('SW registration failed: ', registrationError);
+                });
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <script src="main.js"></script>
+</body>
+
+</html>

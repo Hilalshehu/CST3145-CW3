@@ -20,6 +20,7 @@ export default {
   components: {
     ProductList,
     CheckoutPage,
+    
   },
   data() {
     return {
