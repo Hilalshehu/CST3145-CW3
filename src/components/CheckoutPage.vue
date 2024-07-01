@@ -74,15 +74,6 @@ async checkout() {
     // Example of clearing cart after successful order creation
     this.$emit('clear-cart'); // Emit event to clear cart
 
-    // Check if Vue Router is initialized before navigating
-    if (this.$router) {
-      this.$router.push('/'); // Navigate to home page after successful checkout
-    } else {
-      console.error('Vue Router is not initialized or available.');
-      // Handle case where Vue Router is not available or initialized
-      // Provide fallback behavior or error message
-    }
-
     // Optionally, update state or show success message to user
     this.checkoutMessage = `Order created successfully for ${this.name} (phone: ${this.phone})!`;
 
